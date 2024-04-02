@@ -1,0 +1,265 @@
+# POSTGRESql using Terminal 
+
+1. Open Postgres App and click on the database you want to connect to. This will open a terminal window.
+2. You should be connected to your database now. 
+
+# POSTGRESql using pgAdmin
+1. Open pgAdmin
+2. Click on the server you want to connect to.
+3. Click on the database you want to connect to.
+4. Click on the SQL icon in the top menu bar. This will open a SQL query window.
+
+
+# Getting sample data
+1. Go to https://www.mackaroo.com/ and create a sample dataset.
+2. Download the dataset as a SQL file.
+3. Open the SQL file in a text editor and copy the contents.
+4. Paste the contents into the SQL query window in pgAdmin or the terminal window in Postgres App.
+
+# Terminal Commands
+
+1. To list all databases: `\l`
+2. To get hekp: `\?`
+3. To connect to a database: `\c database_name`
+4. To list all tables: `\dt` or `\d`. To choose a specific table to see its schema: `\d table_name`
+5. To list all schemas: `\dn`
+6. To create a new database: `CREATE DATABASE database_name;`
+7. To delete a database: `DROP DATABASE database_name;` --> This is a dangerous command. Be careful. 
+8. To clear the screen, just press control + L.
+9. To create a new table:
+```
+CREATE TABLE table_name (
+    column_name data_type PRIMARY KEY,
+    column_name data_type NOT NULL,
+    column_name data_type DEFAULT value,
+    column_name data_type REFERENCES other_table_name(column_name),
+);
+10. To drop a table, `DROP TABLE table_name;`
+11. To insert data into a table:
+```
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+12. To view all entries of a table: `SELECT * FROM table_name;`
+13. To view specific columns of a table: `SELECT column1, column2 FROM table_name;`
+
+14. To order the data in ascending or descending order based on a column: `SELECT * FROM table_name ORDER BY column_name ASC/DESC;`
+
+15. To find unique values in a column: `SELECT DISTINCT column_name FROM table_name;` --> Can also use order by to sort these results. 
+
+16. To filter the table based on certain conditions, use the following syntax:
+```
+SELECT * FROM table_name WHERE column_name = value OR column_name > value AND column_name < value;
+```
+
+17. For not equal to, use `!=` or `<>`
+
+18. To limit the reuslting query, use the LIMIT keyword: `SELECT * FROM table_name LIMIT 10;` --> GIves the first 10 results.
+
+19. To skip the first n results, use the OFFSET keyword: `SELECT * FROM table_name OFFSET 10;` --> Skips the first 10 results.
+
+20. To combine LIMIT and OFFSET, use the following syntax: `SELECT * FROM table_name LIMIT 10 OFFSET 10;` --> Gives the next 10 results after the first 10.
+
+21. FETCh is a shorthand for LIMIT and OFFSET: `SELECT * FROM table_name FETCH FIRST 10 ROWS ONLY;`
+
+22. IN is used to filter based on multiple values: `SELECT * FROM table_name WHERE column_name IN (value1, value2);`
+
+23. For date range filtering, use BETWEEN keyword 
+```
+SELECT * FROM table_name WHERE date_column BETWEEN DATE '2020-01-01' AND '2020-12-31';
+```
+
+24. LIKE operator is used for pattern matching: `SELECT * FROM table_name WHERE column_name LIKE 'pattern';` --> % is a wildcard character.
+Example: `SELECT * FROM table_name WHERE column_name LIKE 'A%';` --> Gives all values starting with A.
+Example: `SELECT * FROM table_name WHERE column_name LIKE '%A%';` --> Gives all values with A in between.
+
+25. ILIKE is a case-insensitive version of LIKE. --> `SELECT * FROM table_name WHERE column_name ILIKE 'pattern';`
+
+26. SELECT country_of_birth,COUNT(*) FROM person GROUP BY country_of_birth; --> This will give the count of people born in each country.
+
+27. SELECT country_of_birth,COUNT(*) FROM person GROUP BY country_of_birth  HAVING COUNT(*) > 100 ORDER BY country_of_birth;
+This will give the count of people born in each country where the count is greater than 100. Having is used to filter the results
+ of a GROUP BY clause.
+
+28. SELECT country_of_birth,COUNT(email) FROM person GROUP BY country_of_birth  HAVING COUNT(*) > 100 ORDER BY country_of_birth;
+This will give the count of people born in each country where the count is greater than 100. Having is used to filter the results
+    of a GROUP BY clause. This time, we are counting the number of emails instead of all columns. This COUNT doesn't count any row 
+    where email is Null or empty. Therfore, this approach is better than COUNT(*) while figuring out if a column has any missing value
+    or not.
+
+29. To find the total number of rows in a table: `SELECT COUNT(*) FROM table_name;`
+
+30. To get the min value of a column: `SELECT MIN(column_name) FROM table_name;`
+
+31. To get the max value of a column: `SELECT MAX(column_name) FROM table_name;`
+
+32. To get the average value of a column: `SELECT AVG(column_name) FROM table_name;`
+
+33. To get the sum of a column: `SELECT SUM(column_name) FROM table_name;`
+
+34. To round the result, use the ROUND function: `SELECT ROUND(AVG(column_name), 2) FROM table_name;` --> Rounds to 2 decimal places.
+
+35. SELECT id, make, model, price, ROUND(price * .10, 2), ROUND(price - (price * .10), 2) FROM car;
+This will give the id, make, model, price, 10% of the price, and the price after 10% discount for each car.
+
+36. To rename these new columns, use the AS keyword: 
+`SELECT id, make, model, price, ROUND(price * .10, 2) AS discount, ROUND(price - (price * .10), 2) AS discounted_price FROM car;`
+
+37. Use of COALESCE function: 
+`SELECT COALESCE(column_name, 'default_value') FROM table_name;` --> Replaces NULL values with default_value.
+
+38. SELECT NOW(); --> Gives the current date and time.
+    To get the actual date: SELECT NOW()::DATE;
+    To get the actual time: SELECT NOW()::TIME;
+
+39. To subtract or add dates, 
+SELECT NOW() - INTERVAL '1 day'; --> Subtracts 1 day from the current date.
+SELECT NOW() + INTERVAL '1 day'; --> Adds 1 day to the current date.
+Can also say Months or Years.
+
+40. To extract a part of a date, use the EXTRACT function:
+SELECT EXTRACT(YEAR FROM NOW()); --> Gives the current year.
+SELECT EXTRACT(MONTH FROM NOW()); --> Gives the current month.
+SELECT EXTRACT(DAY FROM NOW()); --> Gives the current day.
+SELECT EXTRACT(DOW FROM NOW()); --> Gives the current day of the week.
+
+41. SELECT first_name, last_name, gender, country_of_birth, AGE(NOW(), date_of_birth) AS age FROM person;
+This will give the age of each person based on their date of birth.
+
+42. To add a primary key to an existing table:
+```
+ALTER TABLE table_name ADD PRIMARY KEY (column_name);
+```
+43. To have unique values in a column:
+```
+ALTER TABLE table_name ADD UNIQUE (column_name);
+```
+44. To add a foreign key to a table:
+```
+ALTER TABLE table_name ADD FOREIGN KEY (column_name) REFERENCES other_table_name(column_name);
+```
+
+45. Using Check Constraints:
+```
+ALTER TABLE table_name ADD CONSTRAINT constraint_name CHECK (column_name > value or column_name < value or column_name = value); 
+```
+46. To delete a row from a table:
+```
+DELETE FROM table_name WHERE column_name = value;
+```
+
+47. To update a row in a table:
+```
+UPDATE table_name SET column_name = new_value, column_name = new_value, column_name = new_value WHERE column_name = value;
+```
+
+48. To update multiple rows in a table:
+```
+UPDATE table_name SET column_name = new_value, column_name = new_value, column_name = new_value 
+WHERE column_name = value OR column_name = value;
+```
+
+49. To ensure errors are not propagated to the user, use the ON CONFLICT DO NOTHING clause:
+```
+INSERT INTO table_name (column1, column2, column3) VALUES (value1, value2, value3) ON CONFLICT (unique_column) DO NOTHING;
+```
+
+50. To update a row without throwing an error, use the ON CONFLICT DO UPDATE clause with an EXCLUDED keyword:
+```
+INSERT INTO table_name (column1, column2, column3) VALUES (value1, value2, value3) ON CONFLICT (unique_column)
+DO UPDATE SET column1 = EXCLUDED.column1, column2 = EXCLUDED.column2, column3 = EXCLUDED.column3;
+```
+INSERT INTO table_name (column1, column2, column3) VALUES (value1, value2, value3) ON CONFLICT (unique_column) 
+DO UPDATE SET column1 = value1, column2 = value2, column3 = value3;
+```
+The difference between the two is that the first one uses the EXCLUDED keyword to refer to the new values being inserted, 
+while the second one uses the actual values.
+
+51. To add relations between tables, use the following syntax:
+```
+CREATE TABLE table1 (
+    id SERIAL PRIMARY KEY,
+    column1 data_type,
+    column2 data_type
+);
+
+CREATE TABLE table2 (
+    id SERIAL PRIMARY KEY,
+    column1 data_type,
+    column2 data_type,
+    table1_id INT REFERENCES table1(id), 
+    UNIQUE(table1_id) --> This ensures that each row in table2 has a unique table1_id.
+);
+```
+Here, table2 has a foreign key that references the id column of table1.
+
+52. Use of Inner Join --> This will give the rows that have matching values in both tables. 
+```
+SELECT * FROM table1 INNER JOIN table2 ON table1.column_name = table2.column_name;
+```
+Also, similar to:
+```
+SELECT * FROM table1 JOIN table2 ON table1.column_name = table2.column_name;
+```
+
+53. Use of Left Join --> This will give all rows from the left table and the matched rows from the right table.
+```
+SELECT * FROM table1 LEFT JOIN table2 ON table1.column_name = table2.column_name;
+```
+
+54. Use of Right Join --> This will give all rows from the right table and the matched rows from the left table.
+```
+SELECT * FROM table1 RIGHT JOIN table2 ON table1.column_name = table2.column_name;
+```
+
+55. Use of Full Join --> This will give all rows when there is a match in either left or right table.
+```
+SELECT * FROM table1 FULL JOIN table2 ON table1.column_name = table2.column_name;
+```
+
+56. To delete a row with a foreign key constraint, use the CASCADE keyword:
+```
+DELETE FROM table_name WHERE column_name = value CASCADE;
+```
+
+57. To update a row with a foreign key constraint, use the CASCADE keyword:
+```
+UPDATE table_name SET column_name = new_value WHERE column_name = value CASCADE;
+```
+
+58. To delete a foreign key constraint, use the following syntax:
+```
+ALTER TABLE table_name DROP CONSTRAINT constraint_name;
+```
+
+59. To download a table as a CSV file, use the following syntax:
+```
+\COPY (table_name or the actual query) TO 'path/to/file.csv' DELIMITER ',' CSV HEADER;
+```
+60. Postgres Exntensions are additional features that can be added to the database. To see all extensions, use the following command:
+```
+SELECT * FROM pg_available_extensions;
+```
+
+61. To add an extension, use the following syntax:
+```
+CREATE EXTENSION IF NOT EXISTS extension_name;
+```
+
+62. UUID Extension -- To generate unique identifiers for rows in a table:
+```
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+
+63. To implement UUID in a table, use the following syntax:
+```
+CREATE TABLE table_name (
+    id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+    column1 data_type,
+    column2 data_type
+);
+
+
+
+
+
